@@ -1,0 +1,479 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>ReOpen向け 海外不動産プラットフォーム分析</title>
+  <style>
+    :root {
+      --bg: #f7f8fb;
+      --panel: #ffffff;
+      --ink: #1f2937;
+      --muted: #64748b;
+      --line: #dbe3ef;
+      --blue: #2563eb;
+      --blue-soft: #eff6ff;
+      --green: #0f766e;
+      --green-soft: #ecfdf5;
+      --amber: #b45309;
+      --amber-soft: #fffbeb;
+      --red: #b91c1c;
+      --red-soft: #fef2f2;
+      --purple: #7c3aed;
+      --purple-soft: #f5f3ff;
+      --slate: #334155;
+      --shadow: 0 18px 48px rgba(15, 23, 42, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--bg);
+      font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", "Noto Sans JP", "Segoe UI", sans-serif;
+      line-height: 1.72;
+    }
+
+    a { color: var(--blue); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .shell { max-width: 1180px; margin: 0 auto; padding: 28px; }
+    main { min-width: 0; }
+
+    h1 { margin: 18px 0 10px; font-size: clamp(30px, 4vw, 52px); line-height: 1.14; }
+    h2 { margin: 0 0 16px; font-size: 24px; line-height: 1.3; }
+    h3 { margin: 0 0 10px; font-size: 17px; line-height: 1.35; }
+    h4 { margin: 0 0 8px; font-size: 14px; line-height: 1.4; }
+    p { margin: 0 0 12px; }
+
+    .section {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+      padding: 28px;
+      margin: 22px 0;
+    }
+    .section p:last-child { margin-bottom: 0; }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 9px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+    .tag.high { color: var(--red); background: var(--red-soft); border: 1px solid #fecaca; }
+    .tag.mid { color: var(--amber); background: var(--amber-soft); border: 1px solid #fde68a; }
+    .tag.low { color: var(--green); background: var(--green-soft); border: 1px solid #bbf7d0; }
+    .tag.watch { color: var(--purple); background: var(--purple-soft); border: 1px solid #ddd6fe; }
+    .tag.neutral { color: var(--slate); background: #f1f5f9; border: 1px solid #e2e8f0; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      overflow: hidden;
+      background: #fff;
+      font-size: 13px;
+    }
+    th, td { border-bottom: 1px solid var(--line); padding: 12px 13px; text-align: left; vertical-align: top; }
+    th { color: var(--slate); background: #f8fafc; font-size: 12px; font-weight: 900; }
+    tr:last-child td { border-bottom: 0; }
+
+    .report-title {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+      padding: 28px;
+      margin-bottom: 22px;
+    }
+    .report-title h1 { margin: 10px 0 8px; font-size: clamp(28px, 3.8vw, 46px); }
+
+    .service-dossier {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #fff;
+      margin: 24px 0;
+      overflow: hidden;
+    }
+
+    .service-head {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 16px;
+      align-items: start;
+      padding: 22px;
+      background: #f8fafc;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .service-name {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .service-name .logo-text { font-size: 25px; font-weight: 950; color: var(--slate); line-height: 1; }
+
+    .screen-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+      padding: 22px;
+    }
+
+    .screen-card {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+      overflow: hidden;
+    }
+
+    .screen-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--line);
+      background: #fbfdff;
+    }
+    .screen-title { font-weight: 900; color: var(--slate); font-size: 14px; }
+    .screen-note { padding: 14px; font-size: 13px; color: var(--slate); }
+
+    .source-chip {
+      display: inline-flex;
+      color: var(--blue);
+      background: var(--blue-soft);
+      border: 1px solid #bfdbfe;
+      border-radius: 999px;
+      padding: 3px 8px;
+      font-size: 11px;
+      font-weight: 800;
+      margin-top: 8px;
+    }
+
+    .actual-shot-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+      padding: 22px;
+    }
+
+    .actual-shot {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      overflow: hidden;
+      background: #fff;
+    }
+    .actual-shot.wide { grid-column: 1 / -1; }
+
+    .actual-shot img {
+      display: block;
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      object-fit: cover;
+      object-position: top center;
+      background: #f8fafc;
+      border-bottom: 1px solid var(--line);
+    }
+    .actual-shot img.full-shot { aspect-ratio: auto; height: auto; object-fit: contain; }
+
+    .actual-shot .caption { padding: 14px; font-size: 13px; color: var(--slate); }
+    .actual-shot .caption strong { display: block; font-size: 15px; margin-bottom: 4px; color: var(--ink); }
+
+    .zestimate-shot {
+      aspect-ratio: 16 / 10;
+      overflow: hidden;
+      padding: 18px;
+      background: #fff;
+      border-bottom: 1px solid var(--line);
+    }
+    .zestimate-shot h4 { text-align: center; font-size: 18px; margin-bottom: 12px; }
+    .zestimate-shot table { font-size: 11px; }
+    .zestimate-shot th, .zestimate-shot td { padding: 8px 9px; white-space: nowrap; }
+
+    .allhomes-shot {
+      aspect-ratio: 16 / 10;
+      overflow: hidden;
+      padding: 26px 28px;
+      background: #fff;
+      border-bottom: 1px solid var(--line);
+      color: #0b2147;
+      position: relative;
+    }
+    .allhomes-shot .follow {
+      position: absolute; top: 28px; right: 28px;
+      border: 1px solid #e11d48; color: #e11d48;
+      border-radius: 6px; padding: 8px 22px;
+      font-size: 13px; background: #fff;
+    }
+    .allhomes-shot h4 { max-width: 560px; font-size: 32px; line-height: 1.2; margin-bottom: 18px; color: #0b2147; }
+    .allhomes-shot .question { font-size: 19px; line-height: 1.5; margin-bottom: 16px; padding-bottom: 14px; border-bottom: 1px solid #e5e7eb; }
+    .allhomes-shot p { font-size: 14px; line-height: 1.7; margin: 0; }
+    .allhomes-shot .red-link { color: #dc2626; text-decoration: underline; margin-top: 14px; font-size: 13px; line-height: 1.55; }
+
+    @media (max-width: 980px) {
+      .shell { padding: 16px; }
+      .screen-grid, .actual-shot-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <main>
+      <header class="report-title">
+        <h1>参考サービスと機能</h1>
+      </header>
+
+      <section class="section" id="platforms">
+        <h2>サービス別</h2>
+
+        <div class="service-dossier">
+          <div class="service-head">
+            <div>
+              <div class="service-name"><span class="logo-text">Zillow</span><span class="tag high">視覚体験・価格納得の最重要参考</span></div>
+              <p>ZillowはFSBO掲載、3D Home、間取り連動、Virtual Staging、Zestimateがまとまっており、ReOpenの「見えない不安」と「価格不安」を下げる参考として最も重要。</p>
+            </div>
+            <a class="source-chip" href="https://www.zillow.com/3d-home/floor-plans/">official source</a>
+          </div>
+          <div class="actual-shot-grid">
+            <div class="actual-shot">
+              <img class="full-shot" src="assets/reopen-platform-screenshots/zillow-3d-floorplans-hero.gif" alt="Zillow 3D Home interactive floor plans official hero animation">
+              <div class="caption">
+                <strong>Zillow 3D Home / Floor Plans</strong>
+                3D Home、Photos、Floor Planを切り替え、室内写真と間取り上の現在位置を連動させるヒーロー表示。<br>
+                <a href="https://www.zillow.com/3d-home/floor-plans/">該当URL: Zillow 3D Home / Floor Plans</a>
+              </div>
+            </div>
+            <div class="actual-shot">
+              <img src="assets/reopen-platform-screenshots/zillow-virtual-staging-asset.jpg" alt="Zillow Virtual Staging official asset screenshot">
+              <div class="caption">
+                <strong>Zillow Virtual Staging</strong>
+                AIステージングのBefore/Afterスライダーとスタイル選択UI。<br>
+                <a href="https://www.zillow.com/news/zillow-brings-ai-powered-virtual-staging-to-showcase-listings/">該当URL: Zillow Virtual Staging announcement</a>
+              </div>
+            </div>
+            <div class="actual-shot">
+              <div class="zestimate-shot">
+                <h4>Zestimate精度（都市圏別）</h4>
+                <table>
+                  <thead><tr><th>都市圏</th><th>中央値誤差</th><th>5%以内</th><th>10%以内</th><th>20%以内</th></tr></thead>
+                  <tbody>
+                    <tr><td>アトランタ</td><td>1.45%</td><td>88.34%</td><td>96.58%</td><td>98.96%</td></tr>
+                    <tr><td>オースティン</td><td>1.85%</td><td>85.03%</td><td>95.41%</td><td>99.08%</td></tr>
+                    <tr><td>ボストン</td><td>2.32%</td><td>78.87%</td><td>95.12%</td><td>99.46%</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="caption">
+                <strong>Zillow Zestimate Accuracy</strong>
+                推定価格そのものだけでなく都市圏別の中央値誤差や販売価格からの乖離率を公開し、情報精度の根拠を示す。ReOpenでは初期は難しいが、成約データが溜まれば安心材料になる。<br>
+                <a href="https://www.zillow.com/zestimate/">該当URL: Zillow Zestimate</a>
+              </div>
+            </div>
+            <div class="actual-shot wide">
+              <img class="full-shot" src="assets/reopen-platform-screenshots/zillow-fsbo-reasons.png" alt="Zillow FSBO reasons to post screenshot">
+              <div class="caption">
+                <strong>Zillow FSBO「投稿する理由」</strong>
+                「動画や無制限の写真を含め無料で出品」「ZillowとTruliaに掲載され多くの購入希望者に届く」「住宅購入希望者は新着物件メールを即座に受け取れる」の3点を、アイコン付きで並べる。3つ目のような当たり前に近い動きも、明示することで初めての利用者の安心材料になる。<br>
+                <a href="https://www.zillow.com/for-sale-by-owner/">該当URL: Zillow For Sale by Owner</a>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="service-dossier">
+          <div class="service-head">
+            <div>
+              <div class="service-name"><span class="logo-text">Redfin</span><span class="tag high">購入ガイド・ハイブリッド設計</span></div>
+              <p>Redfinは完全CtoCではないが、3D Walkthrough、Homebuying Guide、FSBOを直接投稿ではなく外部取り込みにする構造が参考になる。ReOpenではRedfin Owner Estimateの「類似物件を選ぶ」発想は採用しない。中古マンション中心のため、価格根拠は同一マンション内の成約・売出しを優先する。</p>
+            </div>
+            <a class="source-chip" href="https://support.redfin.com/hc/en-us/articles/360018505351-Owner-Estimate">official source</a>
+          </div>
+          <div class="actual-shot-grid">
+            <div class="actual-shot wide">
+              <img class="full-shot" src="assets/reopen-platform-screenshots/redfin-redesign-ai.png" alt="Redfin Re-Design AI room makeover screenshot">
+              <div class="caption">
+                <strong>Redfin Re-Design (Powered by roomvo)</strong>
+                物件写真上で Modern / Rustic / Industrial / Scandinavian / Coastal / Eclectic などのスタイルを選び、Walls / Floors / Countertops のリフォーム後イメージをAIで切り替え表示できる。Before/After を左右スライダーで比較する形式。リフォームのイメージがAIでわかるのはモチベーションが上がっていいかも。<br>
+                <a href="https://www.redfin.com/MD/Silver-Spring/7923-Eastern-Ave-20910/unit-105/home/11759264">該当URL: Redfin物件ページ（Re-Design付き）</a>
+              </div>
+            </div>
+            <div class="actual-shot wide">
+              <img class="full-shot" src="assets/reopen-platform-screenshots/redfin-popular-listing.png" alt="Redfin popular listing badge screenshot">
+              <div class="caption">
+                <strong>Redfin「人気物件」表示</strong>
+                物件ページに「この家は人気があります／閲覧数上位10%に入っています／売り切れる前にぜひご覧ください！」と煽り文言を出している。本日の内見可能枠（午後1〜5時）も併記。閲覧数上位10%のような数値を伴った煽り文言は使えるかもしれない。<br>
+                <a href="https://www.redfin.com/MD/Silver-Spring/7923-Eastern-Ave-20910/unit-105/home/11759264">該当URL: Redfin物件ページ</a>
+              </div>
+            </div>
+            <div class="actual-shot wide">
+              <img class="full-shot" src="assets/reopen-platform-screenshots/redfin-just-listed.png" alt="Redfin just listed badge screenshot">
+              <div class="caption">
+                <strong>Redfin「掲載されたばかり」バッジ</strong>
+                物件写真の左上に「REDFINにより16時間前に掲載されました」とリアルタイム性のあるバッジを表示。新着であることを買主に伝えている。掲載されたばかりという情報は使える。売り側も早く何かしらのアクションがあったほうが継続利用につながる。<br>
+                <a href="https://www.redfin.com/MD/Silver-Spring/7923-Eastern-Ave-20910/unit-105/home/11759264">該当URL: Redfin物件ページ</a>
+              </div>
+            </div>
+            <div class="actual-shot wide">
+              <img class="full-shot" src="assets/reopen-platform-screenshots/redfin-lifestyle-score.png" alt="Redfin lifestyle score screenshot">
+              <div class="caption">
+                <strong>Redfin「ライフスタイル」スコア</strong>
+                ウォーカビリティ、自転車、公共交通、低騒音、ウェルネスゾーン、ちょっとした話題（混雑度）など、生活実感に直結する6項目を10点満点でスコア化し、一行コメント付きで並べる。Walk ScoreとLocal Logic 提供のデータ。AIで点数づけとかできれば良さそう。<br>
+                <a href="https://www.redfin.com/MD/Silver-Spring/7923-Eastern-Ave-20910/unit-105/home/11759264">該当URL: Redfin物件ページ</a>
+              </div>
+            </div>
+            <div class="actual-shot wide">
+              <img class="full-shot" src="assets/reopen-platform-screenshots/redfin-signup-prompt.png" alt="Redfin signup prompt modal screenshot">
+              <div class="caption">
+                <strong>Redfin 登録/ログイン催促モーダル</strong>
+                物件を見ていると「Like what you see? Get notified when new homes like this one hit the market.（こういう物件が気になる？似た新着が出たら通知します）」と被せるモーダルが出て、Join / Sign in ボタンへ誘導する。物件を見てたら登録やログインを催促。<br>
+                <a href="https://www.redfin.com/MD/Silver-Spring/7923-Eastern-Ave-20910/unit-105/home/11759264">該当URL: Redfin物件ページ</a>
+              </div>
+            </div>
+            <div class="actual-shot wide">
+              <img class="full-shot" src="assets/reopen-platform-screenshots/redfin-sell-timeline.png" alt="Redfin sell timeline question screenshot">
+              <div class="caption">
+                <strong>Redfin 売主出品フロー（売却時期ヒアリング）</strong>
+                売却ページに住所を入れると、その住所をヘッダーに固定したまま「いつ売りたい？」（できるだけ早く／今月／1-2ヶ月／3-6ヶ月／7ヶ月以上／まだ決めていない／家の価値だけ知りたい）の選択画面が出る。住所（物件）入力からそのまま登録できる。<br>
+                <a href="https://www.redfin.com/why-sell?inquirySource=484">該当URL: Redfin 売主フロー</a>
+              </div>
+            </div>
+            <div class="actual-shot wide">
+              <img class="full-shot" src="assets/reopen-platform-screenshots/redfin-listing-plans.png" alt="Redfin listing plans comparison screenshot">
+              <div class="caption">
+                <strong>Redfin 掲載プラン比較</strong>
+                通常の「REDFIN掲載物件」と上位の「REDFINコンシェルジュ掲載物件」を機能・手数料で比較するテーブル。コンシェルジュには映画のようなビデオ映像、住宅改修費用の決済まで0円、ソーシャル広告10倍、推奨配置の2倍などの上乗せがあり、手数料は2%→3%（売却）／1%→2.5%（売買）に上がる。ちょっとだけ掲載のサポートをするプランも場合によってはアリかも？<br>
+                <a href="https://www.redfin.com/why-sell?inquirySource=484">該当URL: Redfin Why Sell</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="service-dossier">
+          <div class="service-head">
+            <div>
+              <div class="service-name"><span class="logo-text">Allhomes</span><span class="tag high">個人広告と専門家移管</span></div>
+              <p>ヘルプ上で、個人オーナー/売主が住宅の賃貸、売買、シェアハウスをagentなしで掲載できると明記している。契約書等の書類追加、内見日時、売却済み/賃貸済みステータス更新、代理店への移管導線があり、管理型CtoCに近い参考。</p>
+            </div>
+            <a class="source-chip" href="https://help.allhomes.com.au/hc/en-us/articles/4404551137433-Private-ads-on-Allhomes">official source</a>
+          </div>
+          <div class="actual-shot-grid">
+            <div class="actual-shot">
+              <div class="allhomes-shot">
+                <div class="follow">フォローする</div>
+                <h4>Allhomesに掲載されている個人広告</h4>
+                <div class="question">個人オーナーまたは売主として、自分の物件を広告することはできますか？</div>
+                <p>はい。Allhomes.com.auの「マイリスティング」セクションで、非公開のリスティングを作成できます。Allhomesは、不動産業者を通さずに賃貸、売買、シェアハウスなどの住宅物件を掲載したい個人向けのプラットフォームを提供しています。</p>
+                <div class="red-link">広告掲載にはいくらかかりますか？<br>私の物件情報はAllhomesにどれくらいの期間掲載されますか？</div>
+              </div>
+              <div class="caption">
+                <strong>Allhomes Private Ads</strong>
+                個人オーナー/売主が、agentなしで住宅の賃貸・売買・シェア物件を掲載できることをヘルプで明記している。<br>
+                <a href="https://help.allhomes.com.au/hc/en-us/articles/4404551137433-Private-ads-on-Allhomes">該当URL: Allhomes Private Ads</a>
+              </div>
+            </div>
+            <div class="actual-shot wide">
+              <img class="full-shot" src="assets/reopen-platform-screenshots/allhomes-inspection-slots.png" alt="Allhomes inspection slots screenshot">
+              <div class="caption">
+                <strong>Allhomes 内見スケジュール（Inspections）</strong>
+                物件ページに目先の内見可能枠を5日分まとめて表示し、各枠に「Add to planner」ボタンを置く。問い合わせを介さず、買主側で予定をすぐ確保できる。目先の可能日程が複数表示されているのはありがたい。<br>
+                <a href="https://www.allhomes.com.au/40-de-burgh-street-lyneham-act-2602?tid=183807432">該当URL: Allhomes物件ページ</a>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="service-dossier">
+          <div class="service-head">
+            <div>
+              <div class="service-name"><span class="logo-text">Homa</span><span class="tag high">AI + 専門家の取引支援</span></div>
+              <p>HomaはCtoCではないが、買主がエージェントなしでも進められるように、AI分析、書類レビュー、オファー作成、クロージング管理を組み合わせている。加えて、登録前に物件価格ベースで手数料削減余地を試算できるため、ReOpenの「使う理由」を金額で体感させる参考として強い。</p>
+            </div>
+            <a class="source-chip" href="https://www.tryhoma.com/">official source</a>
+          </div>
+          <div class="actual-shot-grid">
+            <div class="actual-shot">
+              <img class="full-shot" src="assets/reopen-platform-screenshots/homa-home.png" alt="Homa homepage screenshot">
+              <div class="caption">
+                <strong>Homa</strong>
+                AIと専門家サポートで買主エージェントを置き換え、コミッション還元を訴求する。<br>
+                <a href="https://www.tryhoma.com/">該当URL: Homa official site</a>
+              </div>
+            </div>
+            <div class="actual-shot wide">
+              <img class="full-shot" src="assets/reopen-platform-screenshots/homa-commission-credit-user.png" alt="Homa commission credit calculator screenshot">
+              <div class="caption">
+                <strong>Homa Commission Credit Calculator</strong>
+                登録前に物件価格を動かし、従来手数料とHoma手数料、返ってくる可能性のあるクレジットを即時計算できる。<br>
+                <a href="https://www.tryhoma.com/">該当URL: Homa official site</a>
+              </div>
+            </div>
+            <div class="actual-shot wide">
+              <img class="full-shot" src="assets/reopen-platform-screenshots/homa-ai-user.png" alt="Homa AI assistant on listing page screenshot">
+              <div class="caption">
+                <strong>Homa AI</strong>
+                物件ページ内ですぐにAIアシスタントを呼び出せる。質問テンプレート（物件の魅力／浸水リスク／内見方法／オファーの出し方）が常駐し、ユーザーが「何を聞けばいいか」で詰まらない。<br>
+                <strong>ReOpen転用案:</strong> 物件ページ内に常駐するAI＋出品物件ごとの質問テンプレ。第一段はテンプレ＋専門家への取次のみとし、AI回答は段階導入。契約・重要事項は必ず専門家へエスカレーションする。<br>
+                <a href="https://www.tryhoma.com/">該当URL: Homa official site</a>
+              </div>
+            </div>
+            <div class="actual-shot wide">
+              <img class="full-shot" src="assets/reopen-platform-screenshots/homa-blog.png" alt="Homa blog list screenshot">
+              <div class="caption">
+                <strong>Homa Blog（オウンドメディア）</strong>
+                「フロリダ州の初めて住宅購入プログラム」「不動産業者を通さずに家を購入する方法」「2026年にフロリダ州で最も住みやすい場所」「不動産仲介手数料解説」「AI住宅購入支援」など、初心者向け解説と地域情報、業界トピックの記事を画像付きで一覧化。「専門家の洞察、実践的なアドバイス、不動産業界の最新情報」と打ち出す。オウンドメディアにも使えるブログ記事。マンションブロガー等に執筆依頼もあり。自分のblog導線も許可したり。<br>
+                <a href="https://www.tryhoma.com/blog">該当URL: Homa Blog</a>
+              </div>
+            </div>
+            <div class="actual-shot wide">
+              <img class="full-shot" src="assets/reopen-platform-screenshots/homa-offer-negotiation.png" alt="Homa offer price and negotiation power screenshot">
+              <div class="caption">
+                <strong>Homa オファー価格＋交渉力スコア</strong>
+                物件詳細に「オファー価格 29万ドル／オファーの見積もりを見る」と並べて、「交渉力 68/100」のスコアバーを表示。「この物件はしばらく売れ残っているようで、価格もやや高めに設定されているため、あなたは交渉において有利な立場にあります」のように、根拠の文章も添える。値引き交渉が可能であれば、このような表示は買う側に有効。<br>
+                <a href="https://app.tryhoma.com/property/6997cff14442bcd94dabbcc1/details">該当URL: Homa物件ページ</a>
+              </div>
+            </div>
+            <div class="actual-shot wide">
+              <img class="full-shot" src="assets/reopen-platform-screenshots/homa-price-analysis.png" alt="Homa price analysis with AI chat screenshot">
+              <div class="caption">
+                <strong>Homa 提示価格の根拠＋AIによる適正価格レビュー</strong>
+                物件詳細に「提示価格の算出方法」（価格変更履歴／市場滞留日数81日／物件データ／交渉力）を並べ、隣にAIチャット「ホマアイ」を置く。「この物件の提示価格は妥当ですか？」と聞くと、類似物件の単価、市場滞留日数、値下げ履歴、管理費の高さなどを根拠に「335,000ドルは高すぎる」「提案価格帯は29万ドル〜30万5千ドル」と具体的な答えが返ってくる。売る側は嫌かもしれないが、買う側はありがたい。<br>
+                <a href="https://app.tryhoma.com/property/6997cff14442bcd94dabbcc1/details">該当URL: Homa物件ページ</a>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="ctoc-classification">
+          <h3>CtoCに近いもの</h3>
+          <ul>
+            <li><a href="https://www.zillow.com/for-sale-by-owner/">Zillow (FSBO)</a></li>
+            <li><a href="https://www.rightmove.co.uk/overseas-property/advertise/private-vendor">Rightmove Overseas</a></li>
+            <li><a href="https://help.allhomes.com.au/hc/en-us/articles/4404551137433-Private-ads-on-Allhomes">Allhomes</a></li>
+            <li><a href="https://www.tryhoma.com/">Homa</a></li>
+          </ul>
+
+          <h3>ハイブリッド</h3>
+          <ul>
+            <li><a href="https://support.redfin.com/hc/en-us/articles/360009396352-For-Sale-By-Owner-FSBO">Redfin</a></li>
+          </ul>
+        </div>
+      </section>
+
+    </main>
+  </div>
+</body>
+</html>
